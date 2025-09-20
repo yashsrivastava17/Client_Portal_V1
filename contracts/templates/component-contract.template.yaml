@@ -1,0 +1,56 @@
+id: your-component-id
+name: Human Readable Name
+component: ReactComponentName
+version: v1.0.0
+status: draft
+figma:
+  file: <figma-file-url>
+  page: <page-name>
+  nodeId: <node-id>
+
+frontendInterfaces:
+  inputs:
+    - name: propName
+      type: string
+      required: false
+      description: Optional prop description
+  outputs:
+    - name: stateName
+      type: object
+      description: Public state or data consumed elsewhere
+  events:
+    - name: onAction
+      description: Emitted when user triggers action
+      payload:
+        example: value
+
+backendInterfaces:
+  http:
+    - method: POST
+      path: /api/example
+      request:
+        example: true
+      response:
+        ok: true
+      errors:
+        - Unauthorized
+  auth:
+    provider: google
+    scopes:
+      - email
+      - profile
+    callbackPath: /api/auth/callback
+  webhooks:
+    - event: example.completed
+      path: /api/webhooks/example
+      payload:
+        id: string
+
+backendImpacts:
+  - type: new-endpoint
+    summary: Create /api/example POST endpoint
+    owner: backend-team
+    ticket: PROJ-123
+
+notes: |
+  Any extra context, constraints, or open questions.

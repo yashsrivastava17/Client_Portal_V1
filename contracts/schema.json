@@ -1,0 +1,145 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://contracts.crenoir-map/schema.json",
+  "title": "UI-Backend Contract",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "component",
+    "version",
+    "frontendInterfaces",
+    "backendInterfaces"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Stable identifier shared with Figma Make nodes."
+    },
+    "name": { "type": "string" },
+    "component": { "type": "string", "description": "React component or screen name" },
+    "figma": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "file": { "type": "string" },
+        "nodeId": { "type": "string" },
+        "page": { "type": "string" }
+      }
+    },
+    "version": { "type": "string", "pattern": "^v[0-9]+(\\.[0-9]+)*$" },
+    "status": { "type": "string", "enum": ["draft", "approved", "deprecated"] },
+    "frontendInterfaces": {
+      "type": "object",
+      "required": ["inputs", "outputs", "events"],
+      "additionalProperties": false,
+      "properties": {
+        "inputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "type"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string" },
+              "type": { "type": "string" },
+              "required": { "type": "boolean", "default": false },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "type"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string" },
+              "type": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string" },
+              "payload": { "type": "object" },
+              "description": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "backendInterfaces": {
+      "type": "object",
+      "required": ["http", "auth", "webhooks"],
+      "additionalProperties": false,
+      "properties": {
+        "http": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["method", "path", "request", "response"],
+            "additionalProperties": false,
+            "properties": {
+              "method": { "type": "string", "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"] },
+              "path": { "type": "string" },
+              "request": { "type": "object" },
+              "response": { "type": "object" },
+              "errors": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "provider": { "type": "string" },
+            "scopes": { "type": "array", "items": { "type": "string" } },
+            "callbackPath": { "type": "string" }
+          }
+        },
+        "webhooks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["event", "path", "payload"],
+            "additionalProperties": false,
+            "properties": {
+              "event": { "type": "string" },
+              "path": { "type": "string" },
+              "payload": { "type": "object" }
+            }
+          }
+        }
+      }
+    },
+    "backendImpacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "summary"],
+        "additionalProperties": false,
+        "properties": {
+          "type": { "type": "string", "enum": ["new-endpoint", "modify-endpoint", "data-model", "config", "infra"] },
+          "summary": { "type": "string" },
+          "owner": { "type": "string" },
+          "ticket": { "type": "string" }
+        }
+      }
+    },
+    "notes": { "type": "string" }
+  }
+}
+

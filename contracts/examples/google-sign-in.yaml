@@ -1,0 +1,74 @@
+id: google-sign-in
+name: Google Sign-In
+component: GoogleSignIn
+version: v1.0.0
+status: approved
+figma:
+  file: https://www.figma.com/design/lSTUMDNMtxGk2D2g9wX3wf/Crenoir-X-MAP-Client-Portal
+  page: Auth
+  nodeId: 1234:5678
+
+frontendInterfaces:
+  inputs:
+    - name: redirectPath
+      type: string
+      required: false
+      description: Path to redirect after successful login
+  outputs:
+    - name: authState
+      type: object
+      description: Contains user and session status
+  events:
+    - name: login.clicked
+      description: User clicked the Google sign-in button
+      payload: { }
+    - name: login.success
+      description: Login flow completed successfully
+      payload:
+        userId: string
+        email: string
+    - name: login.error
+      description: Login flow failed
+      payload:
+        code: string
+        message: string
+
+backendInterfaces:
+  http:
+    - method: GET
+      path: /api/auth/google
+      request: { }
+      response:
+        redirect: string
+      errors:
+        - 500 Internal Server Error
+    - method: GET
+      path: /api/auth/google/callback
+      request:
+        query:
+          code: string
+          state: string
+      response:
+        token: string
+        user:
+          id: string
+          email: string
+      errors:
+        - 400 Bad Request
+        - 401 Unauthorized
+  auth:
+    provider: google
+    scopes:
+      - email
+      - profile
+    callbackPath: /api/auth/google/callback
+  webhooks: [ ]
+
+backendImpacts:
+  - type: new-endpoint
+    summary: Add Google OAuth routes and session issuance
+    owner: backend
+    ticket: AUTH-42
+
+notes: |
+  Aligns with `src/components/GoogleSignIn.tsx` and backend `routes/auth.ts`.
